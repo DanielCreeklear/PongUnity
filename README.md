@@ -1,2 +1,3 @@
 # PongUnity
-A simple pong game made in Unity
+![PongUnity Print](./pongUnity.jpg)
+A simple ping pong game made in Unity
