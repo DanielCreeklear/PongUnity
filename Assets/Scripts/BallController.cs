@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
     {
         startSpeed = Speed;
         rb = GetComponent<Rigidbody2D>();
-
+        startTime = Time.time;
         ResetBall();
     }
 
@@ -21,42 +21,54 @@ public class BallController : MonoBehaviour
     {
         if (Time.time - startTime > 2)
         {
-
+            rb.simulated = true;
         }
         rb.velocity = direction * Speed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        float x = rb.velocity.x;
-        float y = rb.velocity.y;
-        
         if (collision.CompareTag("Paddle"))
         {
-            x *= -1;
+            direction.x *= -1;
+
+            float paddleHeight = collision.bounds.size.y;
+            float ballY = ComputeBallY(collision.transform.localPosition.y, paddleHeight);
+
+            direction.y += ballY + Random.Range(-0.05f, 0.05f);
+            direction.x += Mathf.Sign(direction.x) * Mathf.Abs(direction.y);
+            direction.Normalize();
         }
         else if (collision.CompareTag("Border"))
         {
-            y *= -1;
+            direction.y *= -1;
         }
 
-        direction = new Vector2(x, y);
         if (Speed < 7)
         {
             Speed += .1f;
         }
     }
 
-    private void ResetBall()
+    public void ResetBall()
     {
         rb.simulated = false;
         startTime = Time.time;
         Speed = startSpeed;
 
         transform.localPosition = Vector2.zero;
-        float x = Random.value < 0.5 ? -1 : 1;
+        float x = Random.value < 0.5f ? -1f : 1f;
         float y = Random.Range(-1, 1);
         direction = new Vector2(x, y);
         direction.Normalize();
+
+        Speed = startSpeed;
+    }
+
+    private float ComputeBallY(float paddlePosY, float paddleHeight)
+    {
+        float ballPosY = transform.localPosition.y;
+        float y = ((ballPosY - paddlePosY) / paddleHeight) * 2;
+        return Mathf.Clamp(y, -1, 1);
     }
 }

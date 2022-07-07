@@ -9,7 +9,8 @@ public class PlayerController : MonoBehaviour
         NONE
     };
     Rigidbody2D rb;
-    public float Speed=2;
+    public float Speed;
+    public Transform ball;
     private KeyCode upCode;
     private KeyCode downCode;
     private float paddleHeight;
@@ -27,11 +28,11 @@ public class PlayerController : MonoBehaviour
         switch (GetCommand())
         {
             case Command.UP:
-                rb.velocity = Vector2.up;
+                rb.velocity = Vector2.up * Speed;
                 break;
             
             case Command.DOWN:
-                rb.velocity = Vector2.down;
+                rb.velocity = Vector2.down * Speed;
                 break;
 
             default:
